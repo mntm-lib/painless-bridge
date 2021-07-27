@@ -1,0 +1,52 @@
+{
+  "name": "@mntm/painless-bridge",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "./dist/bridge.js",
+  "exports": "./dist/bridge.js",
+  "types": "./dist/bride.d.ts",
+  "sideEffects": false,
+  "author": {
+    "name": "Anton Petrov",
+    "email": "im@petrov.engineer",
+    "url": "https://petrov.engineer"
+  },
+  "description": "A package for integrating VK Mini Apps with official VK clients for iOS, Android and Web",
+  "license": "MIT",
+  "keywords": [
+    "vk",
+    "vkontakte",
+    "vkminiapps",
+    "vk-mini-apps",
+    "bridge",
+    "connect",
+    "vk-api",
+    "vk-apps",
+    "vk-connect",
+    "vk-bridge"
+  ],
+  "homepage": "https://github.com/maxi-team/painless-bridge",
+  "bugs": "https://github.com/maxi-team/painless-bridge/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/maxi-team/painless-bridge.git"
+  },
+  "scripts": {
+    "build": "shx rm -rf dist && tsc"
+  },
+  "peerDependencies": {
+    "exponential-backoff": "^3.1.0"
+  },
+  "peerDependenciesMeta": {
+    "exponential-backoff": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@mntm/eslint-config": "^0.2.0",
+    "eslint": "^7.31.0",
+    "exponential-backoff": "^3.1.0",
+    "shx": "^0.3.3",
+    "typescript": "^4.3.5"
+  }
+}
