@@ -3,9 +3,8 @@ import type { VKBridgeSend } from '../types/data.js';
 
 import { USER_DENIED } from './error.js';
 
-import { isBridgeError, nextId } from '../utils.js';
+import { isBridgeError, nextId, awaiters } from '../utils.js';
 import { invoke } from '../bridge.js';
-import { awaiters } from '../awaiters.js';
 
 const isScopeIdentical = (requested: string, received: string) => {
   if (requested && received) {
@@ -50,7 +49,7 @@ export const pluginToken = (send: VKBridgeSend): VKBridgeSend => {
         const safe: Record<string, unknown> = params == null ? {} : params;
         safe.request_id = id;
         safe.scope = safe.scope || '';
-        awaiters[id] = createTokenAwaiter(safe, resolve as AnyHandler, reject);
+        awaiters.set(id, createTokenAwaiter(safe, resolve as AnyHandler, reject));
         invoke(method, safe);
       });
     }

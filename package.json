@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "type": "module",
   "main": "./dist/bridge.js",
+  "module": "./dist/bridge.js",
   "exports": "./dist/bridge.js",
   "types": "./dist/bride.d.ts",
   "sideEffects": false,

@@ -1,8 +1,7 @@
 import type { AnyHandler, VKBridgeContext } from './types/common.js';
 import type { VKBridgeEvent, VKBridgeMethod, VKBridgeSend, VKBridgeSubscribeHandler } from './types/data.js';
 
-import { assertSupport, isBridgeError, isBridgeEvent, nextId } from './utils.js';
-import { awaiters } from './awaiters.js';
+import { assertSupport, isBridgeError, isBridgeEvent, nextId, awaiters } from './utils.js';
 
 const context = window as unknown as VKBridgeContext;
 
@@ -14,6 +13,12 @@ const ios = context.webkit && context.webkit.messageHandlers;
 
 /** Native VK Bridge interface. */
 const native = android || ios;
+
+/** WebSDK methods */
+const methods: string[] = [];
+
+/** WebSDK target */
+let target = '';
 
 /**
  * Checks if a method is supported on runtime platform.
@@ -28,9 +33,8 @@ const supports = (() => {
     };
   }
 
-  return () => {
-    console.warn('support lookup is not supported yet');
-    return false;
+  return <M extends string>(method: VKBridgeMethod<M>) => {
+    return methods.includes(method);
   };
 })();
 
@@ -40,17 +44,31 @@ const emit = (event: VKBridgeEvent) => {
     return;
   }
 
+  const type = event.detail.type;
   const payload = event.detail.data;
-  const id = payload.request_id as string;
 
-  if (id && awaiters[id]) {
-    (awaiters[id] as AnyHandler)(payload);
-    awaiters[id] = null;
+  if (type === 'VKWebAppSettings') {
+    target = (payload.frameId as string) || target;
   }
 
-  handlers.slice(0).forEach((handler) => {
-    handler(event);
-  });
+  if (type === 'SetSupportedHandlers') {
+    // eslint-disable-next-line prefer-spread
+    methods.push.apply(methods, payload.supportedHandlers as string[]);
+  }
+
+  const id = payload.request_id as string;
+
+  const awaiter = awaiters.get(id);
+  if (awaiter != null) {
+    awaiter(payload);
+    awaiters.delete(id);
+  }
+
+  if (handlers.length !== 0) {
+    handlers.slice(0).forEach((handler) => {
+      handler(event);
+    });
+  }
 };
 
 // Subscribe to events
@@ -102,6 +120,8 @@ export const invoke = (() => {
   return (handler: string, params: Record<string, unknown>) => {
     window.parent.postMessage({
       type: 'vk-connect',
+      frameId: target,
+      webFrameId: target,
       handler,
       params
     }, '*');
@@ -130,7 +150,7 @@ const send: VKBridgeSend = (method, params) => {
     const id = nextId();
     const safe: Record<string, unknown> = params == null ? {} : params;
     safe.request_id = id;
-    awaiters[id] = createAwaiter(resolve as AnyHandler, reject);
+    awaiters.set(id, createAwaiter(resolve as AnyHandler, reject));
     invoke(method, safe);
   });
 };
@@ -171,6 +191,28 @@ const isStandalone = () => {
   return !isEmbedded();
 };
 
+/**
+ * @deprecated There is not a single situation where it would be necessary.
+ */
+const createBridge = () => {
+  return {
+    send,
+    sendPromise: send,
+    subscribe,
+    unsubscribe,
+    supports,
+    isWebView,
+    isIframe,
+    isEmbedded,
+    isStandalone
+  };
+};
+
+/**
+ * @deprecated Use imports instead.
+ */
+const bridge = createBridge();
+
 export {
   send,
   subscribe,
@@ -179,5 +221,8 @@ export {
   isWebView,
   isIframe,
   isEmbedded,
-  isStandalone
+  isStandalone,
+
+  bridge,
+  createBridge
 };

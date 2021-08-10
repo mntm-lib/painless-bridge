@@ -6,7 +6,11 @@ export {
   send,
   subscribe,
   unsubscribe,
-  supports
+  supports,
+
+  bridge,
+  bridge as default,
+  createBridge
 } from './bridge.js';
 
 export {

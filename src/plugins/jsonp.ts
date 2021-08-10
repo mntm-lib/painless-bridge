@@ -1,8 +1,12 @@
 import type { VKBridgeMethodParams, VKBridgeSend } from '../types/data.js';
+import type { AnyHandler } from '../types/common.js';
 
 import { nextId } from '../utils.js';
-import { awaiters } from '../awaiters.js';
 import { params } from './params.js';
+
+const context = window as unknown as Record<string, unknown>;
+const awaiters: Record<string, AnyHandler | null> = {};
+context.__awaiters = awaiters;
 
 // Detecting lang for API or fallback to user default
 const langParam = params.language ? `&lang=${params.language}` : '';
