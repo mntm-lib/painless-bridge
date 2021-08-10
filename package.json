@@ -1,11 +1,11 @@
 {
   "name": "@mntm/painless-bridge",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "type": "module",
   "main": "./dist/bridge.js",
   "module": "./dist/bridge.js",
   "exports": "./dist/bridge.js",
-  "types": "./dist/bride.d.ts",
+  "types": "./dist/bridge.d.ts",
   "sideEffects": false,
   "author": {
     "name": "Anton Petrov",
