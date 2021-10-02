@@ -1,11 +1,10 @@
 {
   "name": "@mntm/painless-bridge",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "type": "module",
-  "main": "./dist/index.js",
-  "module": "./dist/index.js",
-  "exports": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "main": "./lib/index.js",
+  "module": "./lib/index.js",
+  "types": "./lib/index.d.ts",
   "sideEffects": false,
   "author": {
     "name": "Anton Petrov",
@@ -33,7 +32,7 @@
     "url": "https://github.com/maxi-team/painless-bridge.git"
   },
   "scripts": {
-    "build": "shx rm -rf dist && tsc"
+    "build": "shx rm -rf lib && tsc"
   },
   "peerDependencies": {
     "exponential-backoff": "^3.1.0"
@@ -44,10 +43,10 @@
     }
   },
   "devDependencies": {
-    "@mntm/eslint-config": "^0.2.0",
+    "@mntm/eslint-config": "^0.4.3",
     "eslint": "^7.32.0",
     "exponential-backoff": "^3.1.0",
     "shx": "^0.3.3",
-    "typescript": "^4.3.5"
+    "typescript": "^4.4.3"
   }
 }

@@ -1,4 +1,4 @@
-import type { VKBridgeEvent, ErrorData } from './types/data.js';
+import type { ErrorData, VKBridgeEvent } from './types/data.js';
 import type { AnyHandler } from './types/common.js';
 
 import { supports } from './bridge.js';
@@ -6,6 +6,7 @@ import { UNSUPPORTED_PLATFORM } from './plugins/error.js';
 
 // Generate unique ids
 let counter = 0;
+
 export const nextId = () => `_${++counter}`;
 
 // For internal use only

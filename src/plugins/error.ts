@@ -34,6 +34,7 @@ const getError = (error?: Record<string, unknown>): ErrorDataFullSpec => {
 /** Gets error reason with fallback. */
 export const getErrorReason = (unsafe?: Record<string, unknown>) => {
   const error = getError(unsafe);
+
   return error.error_data.error_reason || '';
 };
 
@@ -41,6 +42,7 @@ export const getErrorReason = (unsafe?: Record<string, unknown>) => {
 export const getErrorType = (unsafe?: Record<string, unknown>): string => {
   const error = getError(unsafe);
   const error_reason = getErrorReason(error);
+
   return (error_reason as Record<string, string>).error_type || error.error_type;
 };
 
@@ -48,7 +50,8 @@ export const getErrorType = (unsafe?: Record<string, unknown>): string => {
 export const getErrorCode = (unsafe?: Record<string, unknown>): number => {
   const error = getError(unsafe);
   const error_reason = getErrorReason(error);
-  return typeof error_reason === 'object' && (error_reason.code || error_reason.error_code) || error.error_data.error_code || 1;
+
+  return (typeof error_reason === 'object' && (error_reason.code || error_reason.error_code)) || error.error_data.error_code || 1;
 };
 
 const isNetworkReason = (msg?: string) => {
@@ -57,12 +60,12 @@ const isNetworkReason = (msg?: string) => {
 
 const API_DENIED_CODES = [7, 15, 24, 27, 28, 200, 201, 203];
 const isDeniedByAPI = (code?: number) => {
-  return API_DENIED_CODES.includes(code as number);
+  return API_DENIED_CODES.includes(code!);
 };
 
 const CLIENT_DENIED_CODES = [4, 7, 8];
 const isDeniedByClient = (code?: number) => {
-  return CLIENT_DENIED_CODES.includes(code as number);
+  return CLIENT_DENIED_CODES.includes(code!);
 };
 
 /** Casts edge case errors to proper ones. */
@@ -82,6 +85,7 @@ export const castError = (unsafe?: Record<string, unknown>): ErrorData => {
     error_data.error_msg,
     error_data.error_text
   ];
+
   if (Array.isArray(error_data.error_description)) {
     msgs.push(...error_data.error_description);
   } else {
@@ -123,8 +127,8 @@ export const castError = (unsafe?: Record<string, unknown>): ErrorData => {
 
 export const pluginError = (send: VKBridgeSend): VKBridgeSend => {
   return (method, params) => {
-    return send(method, params).catch((e) => {
-      throw castError(e);
+    return send(method, params).catch((ex) => {
+      throw castError(ex);
     });
   };
 };

@@ -1,14 +1,14 @@
 import type { AnyHandler, VKBridgeContext } from './types/common.js';
 import type { VKBridgeEvent, VKBridgeMethod, VKBridgeSend, VKBridgeSubscribeHandler } from './types/data.js';
 
-import { assertSupport, isBridgeError, isBridgeEvent, nextId, awaiters } from './utils.js';
+import { assertSupport, awaiters, isBridgeError, isBridgeEvent, nextId } from './utils.js';
 
 const context = window as unknown as VKBridgeContext;
 
 /** Android VK Bridge interface. */
 const android = context.AndroidBridge;
 
-/** iOS VK Bridge interface. */
+/** IOS VK Bridge interface. */
 const ios = context.webkit && context.webkit.messageHandlers;
 
 /** Native VK Bridge interface. */
@@ -59,12 +59,13 @@ const emit = (event: VKBridgeEvent) => {
   const id = payload.request_id as string;
 
   const awaiter = awaiters.get(id);
+
   if (awaiter != null) {
     awaiter(payload);
     awaiters.delete(id);
   }
 
-  if (handlers.length !== 0) {
+  if (handlers.length > 0) {
     handlers.slice(0).forEach((handler) => {
       handler(event);
     });
@@ -96,6 +97,7 @@ const subscribe = (listener: VKBridgeSubscribeHandler) => {
  */
 const unsubscribe = (listener: VKBridgeSubscribeHandler) => {
   const index = handlers.indexOf(listener);
+
   if (index !== -1) {
     handlers.splice(index, 1);
   }
@@ -133,6 +135,7 @@ const createAwaiter = (resolve: AnyHandler, reject: AnyHandler) => {
     if (isBridgeError(payload)) {
       return reject(payload);
     }
+
     return resolve(payload);
   };
 };
@@ -149,8 +152,11 @@ const send: VKBridgeSend = (method, params) => {
   return new Promise((resolve, reject) => {
     const id = nextId();
     const safe: Record<string, unknown> = params == null ? {} : params;
+
     safe.request_id = id;
+
     awaiters.set(id, createAwaiter(resolve as AnyHandler, reject));
+
     invoke(method, safe);
   });
 };

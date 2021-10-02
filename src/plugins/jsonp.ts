@@ -6,6 +6,7 @@ import { params } from './params.js';
 
 const context = window as unknown as Record<string, unknown>;
 const awaiters: Record<string, AnyHandler | null> = {};
+
 context.__awaiters = awaiters;
 
 // Detecting lang for API or fallback to user default
@@ -14,14 +15,17 @@ const langParam = params.language ? `&lang=${params.language}` : '';
 // For internal use only
 const stringifyParams = (params: Record<string, unknown>): string => {
   let result = '';
+
   for (const key in params) {
-    const param = key + '=' + encodeURIComponent('' + params[key]);
+    const param = `${key}=${encodeURIComponent(`${params[key]}`)}`;
+
     if (result === '') {
       result = param;
     } else {
-      result += '&' + param;
+      result += `&${param}`;
     }
   }
+
   return result;
 };
 
@@ -37,7 +41,7 @@ const sendJSONP = (params: Record<string, unknown>) => {
     const script = document.createElement('script');
 
     const remove = () => {
-      // sync => async
+      // Sync => async
       requestAnimationFrame(() => {
         document.head.removeChild(script);
       });
@@ -49,8 +53,8 @@ const sendJSONP = (params: Record<string, unknown>) => {
       reject({
         error_type: 'api_error',
         error_data: {
-          error_code: error && error.code || 1,
-          error_msg: error && error.message || 'Unknown error',
+          error_code: (error && error.code) || 1,
+          error_msg: (error && error.message) || 'Unknown error',
           request_params: requestParams.split('&').map((param) => decodeURIComponent(param))
         }
       });
@@ -74,7 +78,7 @@ const sendJSONP = (params: Record<string, unknown>) => {
       }
     };
 
-    // async but sync for src assigning
+    // Async but sync for src assigning
     document.head.appendChild(Object.assign(script, {
       id,
       src,
@@ -89,8 +93,10 @@ export const pluginJSONP = (send: VKBridgeSend): VKBridgeSend => {
   return (method, params) => {
     if (method === 'VKWebAppCallAPIMethod') {
       const safe: Record<string, unknown> = params == null ? {} : params;
+
       return sendJSONP(safe) as Promise<any>;
     }
+
     return send(method, params);
   };
 };

@@ -20,7 +20,7 @@
     "skipLibCheck": true,
     "isolatedModules": true,
     "declaration": true,
-    "outDir": "dist"
+    "outDir": "lib"
   },
   "include": [
     "src/**/*"
