@@ -2,15 +2,11 @@ import type { VKBridgeMethodParams, VKBridgeSend } from '../types/data.js';
 import type { AnyHandler } from '../types/common.js';
 
 import { nextId } from '../utils.js';
-import { params } from './params.js';
 
 const context = window as unknown as Record<string, unknown>;
 const awaiters: Record<string, AnyHandler | null> = {};
 
 context.__awaiters = awaiters;
-
-// Detecting lang for API or fallback to user default
-const langParam = params.language ? `&lang=${params.language}` : '';
 
 // For internal use only
 const stringifyParams = (params: Record<string, unknown>): string => {
@@ -30,13 +26,13 @@ const stringifyParams = (params: Record<string, unknown>): string => {
 };
 
 const sendJSONP = (params: Record<string, unknown>) => {
-  return new Promise<Record<string, unknown>>((resolve, reject) => {
+  return new Promise<any>((resolve, reject) => {
     const id = nextId();
 
     const apiParams = params as VKBridgeMethodParams<'VKWebAppCallAPIMethod'>;
     const requestParams = stringifyParams(apiParams.params);
 
-    const src = `https://api.vk.com/method/${apiParams.method}?${requestParams}${langParam}&callback=__awaiters.${id}`;
+    const src = `https://api.vk.com/method/${apiParams.method}?${requestParams}&callback=__awaiters.${id}`;
 
     const script = document.createElement('script');
 
@@ -94,7 +90,7 @@ export const pluginJSONP = (send: VKBridgeSend): VKBridgeSend => {
     if (method === 'VKWebAppCallAPIMethod') {
       const safe: Record<string, unknown> = params == null ? {} : params;
 
-      return sendJSONP(safe) as Promise<any>;
+      return sendJSONP(safe);
     }
 
     return send(method, params);
