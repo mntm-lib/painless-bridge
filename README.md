@@ -1,6 +1,6 @@
 # @mntm/painless-bridge [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/maxi-team/painless-bridge/blob/master/LICENSE) [![npm bundle size](https://img.shields.io/bundlephobia/min/@mntm/painless-bridge)](https://bundlephobia.com/result?p=@mntm/painless-bridge)
 
-**Docs:** RU | EN
+**Docs:** [RU](https://dev.vk.com/bridge/getting-started) | [EN](https://github.com/VKCOM/vk-bridge/blob/master/README.md)
 
 A package for integrating VK Mini Apps with official VK clients for iOS, Android and Web.
 
