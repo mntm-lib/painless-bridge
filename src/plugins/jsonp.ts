@@ -1,9 +1,9 @@
 import type { VKBridgeMethodParams, VKBridgeSend } from '../types/data.js';
-import type { AnyHandler } from '../types/common.js';
+import type { AnyHandler, VKBridgeContext } from '../types/common.js';
 
 import { nextId } from '../utils.js';
 
-const context = window as unknown as Record<string, unknown>;
+const context = window as unknown as VKBridgeContext;
 const awaiters: Record<string, AnyHandler | null> = {};
 
 context.__awaiters = awaiters;
@@ -34,12 +34,12 @@ const sendJSONP = (params: Record<string, unknown>) => {
 
     const src = `https://api.vk.com/method/${apiParams.method}?${requestParams}&callback=__awaiters.${id}`;
 
-    const script = document.createElement('script');
+    const script = context.document.createElement('script');
 
     const remove = () => {
       // Sync => async
       requestAnimationFrame(() => {
-        document.head.removeChild(script);
+        context.document.head.removeChild(script);
       });
     };
 
@@ -51,7 +51,7 @@ const sendJSONP = (params: Record<string, unknown>) => {
         error_data: {
           error_code: (error && error.code) || 1,
           error_msg: (error && error.message) || 'Unknown error',
-          request_params: requestParams.split('&').map((param) => decodeURIComponent(param))
+          request_params: requestParams.split('&').map(decodeURIComponent)
         }
       });
     };
@@ -75,7 +75,7 @@ const sendJSONP = (params: Record<string, unknown>) => {
     };
 
     // Async but sync for src assigning
-    document.head.appendChild(Object.assign(script, {
+    context.document.head.appendChild(Object.assign(script, {
       id,
       src,
       async: true,

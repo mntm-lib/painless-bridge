@@ -10,14 +10,9 @@ export {
 
   bridge,
   bridge as default,
-  createBridge
+  createBridge,
+  sendPromise
 } from './bridge.js';
-
-export {
-  isBridgeError,
-  isBridgeEvent,
-  assertSupport
-} from './utils.js';
 
 export type {
   AppCloseStatus,

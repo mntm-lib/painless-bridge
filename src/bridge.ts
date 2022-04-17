@@ -2,6 +2,7 @@ import type { AnyHandler, VKBridgeContext } from './types/common.js';
 import type { VKBridgeEvent, VKBridgeMethod, VKBridgeSend, VKBridgeSubscribeHandler } from './types/data.js';
 
 import { assertSupport, awaiters, isBridgeError, isBridgeEvent, nextId } from './utils.js';
+import { painless } from './painless.js';
 
 const context = window as unknown as VKBridgeContext;
 
@@ -52,7 +53,6 @@ const emit = (event: VKBridgeEvent) => {
   }
 
   if (type === 'SetSupportedHandlers') {
-    // eslint-disable-next-line prefer-spread
     methods.push.apply(methods, payload.supportedHandlers as string[]);
   }
 
@@ -74,9 +74,9 @@ const emit = (event: VKBridgeEvent) => {
 
 // Subscribe to events
 if (native) {
-  window.addEventListener('VKWebAppEvent', emit as unknown as EventListener);
+  context.addEventListener('VKWebAppEvent', emit as unknown as EventListener);
 } else {
-  window.addEventListener('message', (event) => {
+  context.addEventListener('message', (event) => {
     emit({ detail: event.data });
   });
 }
@@ -120,7 +120,7 @@ export const invoke = (() => {
   }
 
   return (handler: string, params: Record<string, unknown>) => {
-    window.parent.postMessage({
+    context.parent.postMessage({
       type: 'vk-connect',
       frameId: target,
       webFrameId: target,
@@ -140,22 +140,11 @@ const createAwaiter = (resolve: AnyHandler, reject: AnyHandler) => {
   };
 };
 
-/**
- * Sends an event to the runtime env. In the case of Android/iOS application
- * env is the application itself. In the case of the browser, the parent
- * frame in which the event handlers is located.
- *
- * @param method The method (event) name to send
- * @param props Method properties
- */
 const send: VKBridgeSend = (method, params) => {
   return new Promise((resolve, reject) => {
-    const id = nextId();
-    const safe: Record<string, unknown> = params == null ? {} : params;
+    const safe = Object.assign({ request_id: nextId() }, params);
 
-    safe.request_id = id;
-
-    awaiters.set(id, createAwaiter(resolve as AnyHandler, reject));
+    awaiters.set(safe.request_id, createAwaiter(resolve as AnyHandler, reject));
 
     invoke(method, safe);
   });
@@ -176,7 +165,7 @@ const isWebView = () => {
  * @returns Result of checking.
  */
 const isIframe = () => {
-  return window.parent !== window;
+  return context.parent !== context;
 };
 
 /**
@@ -198,12 +187,27 @@ const isStandalone = () => {
 };
 
 /**
+ * Sends an event to the runtime env. In the case of Android/iOS application
+ * env is the application itself. In the case of the browser, the parent
+ * frame in which the event handlers is located.
+ *
+ * @param method The method (event) name to send
+ * @param props Method properties
+ */
+const painlessSend = painless(send);
+
+/**
+ * @deprecated Use send instead.
+ */
+const sendPromise = painlessSend;
+
+/**
  * @deprecated There is not a single situation where it would be necessary.
  */
 const createBridge = () => {
   return {
-    send,
-    sendPromise: send,
+    send: painlessSend,
+    sendPromise: painlessSend,
     subscribe,
     unsubscribe,
     supports,
@@ -220,7 +224,7 @@ const createBridge = () => {
 const bridge = createBridge();
 
 export {
-  send,
+  painlessSend as send,
   subscribe,
   unsubscribe,
   supports,
@@ -230,5 +234,6 @@ export {
   isStandalone,
 
   bridge,
-  createBridge
+  createBridge,
+  sendPromise
 };

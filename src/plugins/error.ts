@@ -87,7 +87,7 @@ export const castError = (unsafe?: Record<string, unknown>): ErrorData => {
   ];
 
   if (Array.isArray(error_data.error_description)) {
-    msgs.push(...error_data.error_description);
+    msgs.push.apply(msgs, error_data.error_description);
   } else {
     msgs.push(error_data.error_description);
   }

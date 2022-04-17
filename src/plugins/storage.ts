@@ -6,9 +6,7 @@ export const pluginStorage = (send: VKBridgeSend): VKBridgeSend => {
       return send(method, params).then((payload) => {
         return Promise.all((payload as VKBridgeMethodResult<'VKWebAppStorageGet'>).keys.map((pair) => {
           return send('VKWebAppStorageSet', pair);
-        })).then(() => {
-          return payload;
-        });
+        })).then(() => payload, () => payload);
       });
     }
 
