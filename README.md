@@ -6,7 +6,7 @@ A package for integrating VK Mini Apps with official VK clients for iOS, Android
 
 ## Differences
 
-- Fixes the storage API
+- Fixes storage API
 - Fixes token API
 - Fixes platform-specific errors
 - Fixes promise API resolution
