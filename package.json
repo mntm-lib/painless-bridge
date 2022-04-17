@@ -2,13 +2,13 @@
   "name": "@mntm/painless-bridge",
   "version": "3.0.0",
   "source": "./src/index.ts",
-  "main": "./lib/index.node.js",
+  "main": "./lib/index.web.js",
   "module": "./lib/index.module.js",
   "types": "./lib/index.d.ts",
   "exports": {
     "import": "./lib/index.module.js",
-    "require": "./lib/index.node.js",
     "node": "./lib/index.node.js",
+    "default": "./lib/index.web.js",
     "types": "./lib/index.d.ts"
   },
   "sideEffects": false,
