@@ -49,8 +49,8 @@ const sendJSONP = (params: Record<string, unknown>) => {
       reject({
         error_type: 'api_error',
         error_data: {
-          error_code: (error && error.code) || 1,
-          error_msg: (error && error.message) || 'Unknown error',
+          error_code: (error && (error.code || error.error_code)) || 1,
+          error_msg: (error && (error.message || error.error_message || error.error_msg)) || 'Unknown error',
           request_params: requestParams.split('&').map(decodeURIComponent)
         }
       });

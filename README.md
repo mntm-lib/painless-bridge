@@ -4,6 +4,16 @@
 
 A package for integrating VK Mini Apps with official VK clients for iOS, Android and Web.
 
+## Differences
+
+- Fixes the storage API
+- Fixes token API
+- Fixes platform-specific errors
+- Fixes promise API resolution
+- Generates stable request ids
+- Allows you to use any method
+- Supports tree-shaking
+
 ## Installation
 
 We recommend to use [yarn](https://classic.yarnpkg.com/en/docs/install/) for dependency management:

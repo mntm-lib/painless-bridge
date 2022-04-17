@@ -1,6 +1,6 @@
 {
   "name": "@mntm/painless-bridge",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "source": "./src/index.ts",
   "main": "./lib/index.web.js",
   "module": "./lib/index.module.js",
