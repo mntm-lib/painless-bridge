@@ -1,6 +1,6 @@
 {
   "name": "@mntm/painless-bridge",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "source": "./src/index.ts",
   "main": "./lib/index.web.js",
   "module": "./lib/index.module.js",
@@ -38,7 +38,7 @@
     "url": "https://github.com/maxi-team/painless-bridge.git"
   },
   "scripts": {
-    "build": "shx rm -rf lib && nanobundle build"
+    "build": "shx rm -rf lib && nanobundle build & tsc"
   },
   "devDependencies": {
     "@mntm/eslint-config": "^1.1.2",
