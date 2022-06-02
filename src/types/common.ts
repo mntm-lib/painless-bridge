@@ -1,6 +1,7 @@
 export type AnyHandler = (payload: Record<string, unknown>) => void;
 
 export type VKBridgeContext = {
+  requestAnimationFrame: Window['requestAnimationFrame'];
   addEventListener: Window['addEventListener'];
   postMessage: Window['postMessage'];
 

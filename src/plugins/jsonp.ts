@@ -1,9 +1,9 @@
 import type { VKBridgeMethodParams, VKBridgeSend } from '../types/data.js';
-import type { AnyHandler, VKBridgeContext } from '../types/common.js';
+import type { AnyHandler } from '../types/common.js';
 
 import { nextId } from '../utils.js';
+import { context } from '../context.js';
 
-const context = window as unknown as VKBridgeContext;
 const awaiters: Record<string, AnyHandler | null> = {};
 
 context.__awaiters = awaiters;
@@ -38,7 +38,7 @@ const sendJSONP = (params: Record<string, unknown>) => {
 
     const remove = () => {
       // Sync => async
-      requestAnimationFrame(() => {
+      context.requestAnimationFrame(() => {
         context.document.head.removeChild(script);
       });
     };

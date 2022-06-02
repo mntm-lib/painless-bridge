@@ -1,10 +1,9 @@
-import type { AnyHandler, VKBridgeContext } from './types/common.js';
+import type { AnyHandler } from './types/common.js';
 import type { VKBridgeEvent, VKBridgeMethod, VKBridgeSend, VKBridgeSubscribeHandler } from './types/data.js';
 
 import { assertSupport, awaiters, isBridgeError, isBridgeEvent, nextId } from './utils.js';
 import { painless } from './painless.js';
-
-const context = window as unknown as VKBridgeContext;
+import { context } from './context.js';
 
 /** Android VK Bridge interface. */
 const android = context.AndroidBridge;

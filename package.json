@@ -1,6 +1,6 @@
 {
   "name": "@mntm/painless-bridge",
-  "version": "3.0.2",
+  "version": "3.1.0",
   "source": "./src/index.ts",
   "main": "./lib/index.web.js",
   "module": "./lib/index.module.js",
@@ -38,15 +38,15 @@
     "url": "https://github.com/maxi-team/painless-bridge.git"
   },
   "scripts": {
-    "build": "shx rm -rf lib && nanobundle build & tsc"
+    "build": "shx rm -rf lib && nanobundle build"
   },
   "devDependencies": {
-    "@mntm/eslint-config": "^1.1.2",
+    "@mntm/eslint-config": "^1.2.0",
     "browserslist-generator": "^1.0.66",
-    "eslint": "^8.13.0",
-    "nanobundle": "^0.0.27",
+    "eslint": "^8.16.0",
+    "nanobundle": "^0.0.28",
     "shx": "^0.3.4",
-    "typescript": "^4.6.3"
+    "typescript": "^4.7.2"
   },
   "browserslist": [
     "and_chr >= 63",
